@@ -1,61 +1,165 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🚀 Laravel UTM Generator
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A simple Laravel application to **generate UTM links** for marketing campaigns.
 
-## About Laravel
+* Enter a single URL → instantly generate a UTM-tagged link.
+* Paste a whole paragraph → it will find all URLs and replace them with UTM-tagged versions.
+* Stores generated UTMs into a **SingleStore database** for tracking.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 📋 Features
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+* 🎯 Generate UTMs with parameters:
 
-## Learning Laravel
+  * **Author** → `utm_source`
+  * **Resource Type** → `utm_medium`
+  * **Campaign / Theme** → `utm_campaign`
+  * **Title Slug** → `utm_content`
+  * **Keywords (optional)** → `utm_term`
+* 📝 Two modes:
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+  1. **Single URL mode** – paste one link.
+  2. **Paragraph mode** – paste a block of text, auto-detects & replaces all links.
+* 📦 Built with **Laravel** + **SingleStore**.
+* 💾 All generated links are stored in the database.
+* 🖥️ Clean UI with tabs, copy buttons, and preview.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+---
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## ⚡ Requirements
 
-## Laravel Sponsors
+Make sure you have these installed:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+* [PHP 8.1+](https://www.php.net/downloads)
+* [Composer](https://getcomposer.org/download/)
+* [Node.js & NPM](https://nodejs.org/) (optional, if you want to recompile assets)
+* A [SingleStoreDB](https://www.singlestore.com/) cluster
 
-### Premium Partners
+---
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## 🔧 Installation
 
-## Contributing
+1. **Clone the repo / unzip**
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+   ```bash
+   git clone https://github.com/yourusername/laravel-utm-generator.git
+   cd laravel-utm-generator
+   ```
 
-## Code of Conduct
+2. **Install dependencies**
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+   ```bash
+   composer install
+   npm install && npm run build   # optional (for assets)
+   ```
 
-## Security Vulnerabilities
+3. **Copy the `.env` file**
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+   ```bash
+   cp .env.example .env
+   ```
 
-## License
+4. **Update your SingleStore database connection** in `.env`:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+   ```env
+   DB_CONNECTION=mysql
+   DB_HOST=svc-xxxxxxx.svc.singlestore.com
+   DB_PORT=3306
+   DB_DATABASE=demoApp
+   DB_USERNAME=admin
+   DB_PASSWORD=your_password_here
+   ```
+
+5. **Run migrations** (this creates all tables)
+
+   ```bash
+   php artisan migrate
+   ```
+
+6. **Start the app**
+
+   ```bash
+   php artisan serve
+   ```
+
+7. Open in browser 👉 [http://127.0.0.1:8000/utm](http://127.0.0.1:8000/utm)
+
+---
+
+## 🖥️ Usage
+
+### 🔹 Single URL Mode
+
+1. Select **Single URL** tab.
+2. Paste your base URL.
+3. Fill in UTM parameters (Author, Campaign, etc).
+4. Click **Generate UTM Link**.
+5. Copy your generated link using the **Copy** button.
+
+### 🔹 Paragraph Mode
+
+1. Select **Paragraph** tab.
+2. Paste a paragraph with one or more links.
+3. Fill in UTM parameters.
+4. Click **Replace Links with UTMs**.
+5. All links in the paragraph will be replaced with UTM-tagged versions.
+
+---
+
+## 📊 Database
+
+All generated links are saved into the **utm_links** table in SingleStore:
+
+* `author`, `title`, `slug`, `resource_type`, `campaign`
+* `original_url`, `utm_url`, `context_text` (paragraph snippets)
+
+---
+
+## 🚀 Deployment
+
+* For production, configure a web server (Nginx/Apache) to serve Laravel.
+* Set `APP_ENV=production` and `APP_DEBUG=false` in `.env`.
+* Ensure your app server’s IP is whitelisted in your SingleStore cluster.
+
+---
+
+## 📌 Example
+
+Input:
+
+```
+Base URL: https://www.singlestore.com/
+Author: test
+Resource Type: blog
+Campaign: october2025
+Slug: utm-demo
+```
+
+Output:
+
+```
+https://www.singlestore.com/?utm_source=test&utm_medium=blog&utm_campaign=october2025&utm_content=utm-demo
+```
+
+---
+
+## 🛠️ Tech Stack
+
+* Laravel 10
+* TailwindCSS
+* SingleStore (MySQL-compatible)
+
+---
+
+## 🤝 Contributing
+
+Pull requests welcome!
+
+---
+
+## 📄 License
+
+MIT License.
+
+---
