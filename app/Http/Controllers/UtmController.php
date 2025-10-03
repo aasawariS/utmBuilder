@@ -15,14 +15,18 @@ class UtmController extends Controller
             'slug'          => 'utm_content',
             'title'         => 'utm_term'
         ];
+
         $parts = [];
         foreach ($map as $field => $utmKey) {
-            if (!empty($data[$field])) {
-                $parts[] = $utmKey . '=' . rawurlencode(str_replace(' ','-',$data[$field]));
+            $value = $data[$field] ?? null;   // safe access
+            if (!empty($value)) {
+                $parts[] = $utmKey . '=' . rawurlencode(str_replace(' ', '-', $value));
             }
         }
-        return implode('&',$parts);
+
+        return implode('&', $parts);
     }
+
 
     private function append(string $url,string $query): string {
         if (!$query) return $url;
@@ -50,6 +54,7 @@ class UtmController extends Controller
     }
 
     // paragraph mode
+    // paragraph mode
     public function generateParagraph(Request $req): \Illuminate\Http\RedirectResponse
     {
         $data = $req->only(['paragraph','author','title','slug','resource_type','campaign']);
@@ -63,12 +68,19 @@ class UtmController extends Controller
             $paragraph = str_replace($url,$utmUrl,$paragraph);
 
             UtmLink::create([
-                'author'=>$data['author'],'title'=>$data['title'],'slug'=>$data['slug'],
-                'resource_type'=>$data['resource_type'],'campaign'=>$data['campaign'],
-                'original_url'=>$url,'utm_url'=>$utmUrl,'context_text'=>substr($data['paragraph'],0,2000)
+                'author'        => $data['author'] ?? null,
+                'title'         => $data['title'] ?? null,   // ✅ safe access
+                'slug'          => $data['slug'] ?? null,
+                'resource_type' => $data['resource_type'] ?? null,
+                'campaign'      => $data['campaign'] ?? null,
+                'original_url'  => $url,
+                'utm_url'       => $utmUrl,
+                'context_text'  => substr($data['paragraph'],0,2000)
             ]);
         }
+
         return back()->with('utm_paragraph',$paragraph);
     }
+
 }
 
